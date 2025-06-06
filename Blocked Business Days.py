@@ -80,7 +80,7 @@ def calculate_days_in_blocked(issue):
     assignee = fields.get("assignee", {}).get("displayName", "Unassigned")
     status = fields.get("status", {}).get("name", "")
     function = (fields.get("customfield_12220") or {}).get("value", "")
-    team = (fields.get("customfield_12221") or {}).get("value", "")
+    team = (fields.get("customfield_12215") or {}).get("value", "") or team_name
     created = fields.get("created", "")
     changelog = issue.get("changelog", {}).get("histories", [])
 
