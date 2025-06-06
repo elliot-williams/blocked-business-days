@@ -1,0 +1,7 @@
+[theme]
+base = "light"
+primaryColor = "#009ADA"                   # Maersk digital blue
+backgroundColor = "#ffffff"                # Clean white
+secondaryBackgroundColor = "#e5eef2"       # Soft Maersk blue-gray
+textColor = "#002a3a"                      # Deep navy (Maersk text)
+font = "sans serif"
