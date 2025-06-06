@@ -1,4 +1,5 @@
 import streamlit as st
+st.set_page_config(layout="wide", page_title="JIRA Blocked Issues Report")
 import requests
 from requests.auth import HTTPBasicAuth
 import pandas as pd
@@ -142,8 +143,8 @@ if submitted:
                 issues = get_issues(jira_email, jira_token, team_name)
                 blocked_issues = [calculate_days_in_blocked(issue) for issue in issues]
                 df = pd.DataFrame(blocked_issues)
-                # Show dataframe without the Link column
-                st.dataframe(df.drop(columns=["Link"]))
+                # Show dataframe without the Link column, in a wide container
+                st.container().dataframe(df.drop(columns=["Link"]), use_container_width=True)
                 excel_data = to_excel(df)
                 st.download_button(
                     label="Download Excel Report",
