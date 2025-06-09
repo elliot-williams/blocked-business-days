@@ -45,6 +45,30 @@ def get_issues(jira_email, jira_token, team_name):
         AND issuetype in (Story, Support)
         AND status in ("Blocked Internal", "Blocked External")
         ORDER BY created ASC
+        ''',
+        "Captains of Compliance": '''
+        "Team[Team]" in (a870c918-f46d-4e69-accc-1f0a869d4fc1)
+        AND issuetype in (Story, Support)
+        AND status in ("Blocked Internal", "Blocked External")
+        ORDER BY created ASC
+        ''',
+        "Winterfell": '''
+        "Team[Team]" in (92aa14a1-a594-471e-9b9f-162d0d038010-487)
+        AND issuetype in (Story, Support)
+        AND status in ("Blocked Internal", "Blocked External")
+        ORDER BY created ASC
+        ''',
+        "TbM & APMT": '''
+        "Team[Team]" in (
+            92aa14a1-a594-471e-9b9f-162d0d038010-487,
+            a870c918-f46d-4e69-accc-1f0a869d4fc1,
+            b4d52324-fe3a-451f-ab59-89efbbbcd2ee,
+            92aa14a1-a594-471e-9b9f-162d0d038010-298,
+            92aa14a1-a594-471e-9b9f-162d0d038010-554
+        )
+        AND issuetype in (Story, Support)
+        AND status in ("Blocked Internal", "Blocked External")
+        ORDER BY created ASC
         '''
     }
     JQL = jql_dict.get(team_name, jql_dict["Reliance"])
@@ -129,7 +153,15 @@ def to_excel(df):
 
 
 with st.form("credentials_form"):
-    team_name = st.selectbox("Select Your Team", ["Reliance", "Abbey Road", "Team Tigers", "TbM Ocean"])
+    team_name = st.selectbox("Select Your Team", [
+        "Reliance",
+        "Abbey Road",
+        "Team Tigers",
+        "TbM Ocean",
+        "Captains of Compliance",
+        "Winterfell",
+        "TbM & APMT"
+    ])
     jira_email = st.text_input("JIRA Email")
     jira_token = st.text_input("JIRA API Token", type="password")
     submitted = st.form_submit_button("Generate Report")
