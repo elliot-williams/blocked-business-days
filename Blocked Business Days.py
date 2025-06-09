@@ -25,13 +25,13 @@ def get_issues(jira_email, jira_token, team_name):
         ORDER BY created ASC
         ''',
         "Abbey Road": '''
-        "Team[Team]" in (abbey-road-team-id)
+        "Team[Team]" in (92aa14a1-a594-471e-9b9f-162d0d038010-298)
         AND issuetype in (Story, Support)
         AND status in ("Blocked Internal", "Blocked External")
         ORDER BY created ASC
         ''',
         "Team Tigers": '''
-        "Team[Team]" in (team-tigers-team-id)
+        "Team[Team]" in (b4d52324-fe3a-451f-ab59-89efbbbcd2ee)
         AND issuetype in (Story, Support)
         AND status in ("Blocked Internal", "Blocked External")
         ORDER BY created ASC
@@ -97,14 +97,20 @@ def get_issues(jira_email, jira_token, team_name):
     return issues
 
 
-def calculate_days_in_blocked(issue):
+def calculate_days_in_blocked(issue, team_name):
     key = issue.get("key")
     fields = issue.get("fields", {})
     summary = fields.get("summary", "")
-    assignee = fields.get("assignee", {}).get("displayName", "Unassigned")
-    status = fields.get("status", {}).get("name", "")
-    function = (fields.get("customfield_12220") or {}).get("value", "")
-    team = (fields.get("customfield_12215") or {}).get("value", "") or team_name
+    assignee_field = fields.get("assignee")
+    assignee = assignee_field.get("displayName", "Unassigned") if isinstance(assignee_field, dict) else "Unassigned"
+    status_field = fields.get("status")
+    status = status_field.get("name", "") if isinstance(status_field, dict) else ""
+    function_field = fields.get("customfield_12220")
+    function = function_field.get("value", "") if isinstance(function_field, dict) else ""
+
+    team_field = fields.get("customfield_12215")
+    team = team_field.get("value", "") if isinstance(team_field, dict) else team_name
+
     created = fields.get("created", "")
     changelog = issue.get("changelog", {}).get("histories", [])
 
@@ -173,7 +179,7 @@ if submitted:
         try:
             with st.spinner("Fetching issues..."):
                 issues = get_issues(jira_email, jira_token, team_name)
-                blocked_issues = [calculate_days_in_blocked(issue) for issue in issues]
+                blocked_issues = [calculate_days_in_blocked(issue, team_name) for issue in issues]
                 df = pd.DataFrame(blocked_issues)
                 # Show dataframe without the Link column, in a wide container
                 st.container().dataframe(df.drop(columns=["Link"]), use_container_width=True)
